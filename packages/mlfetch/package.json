@@ -1,28 +1,28 @@
 {
   "name": "mlfetch",
   "version": "0.1.0",
-  
+
   "description": "A request manager using fetch for scenarios that require lots of requests to be sent",
-  "scripts": {
-    "build": "rollup -c"
-  },
-  "keywords": ["fetch"],
   "author": "hhk-png <fangluoabc@163.com>",
   "license": "MIT",
-  "module": "dist/index.mjs",
-  "main": "dist/index.js",
-  "browser": "dist/index.browser.mjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "browser": "./dist/index.browser.mjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/hhk-png/mlfetch.git"
-  }
+  },
+  "keywords": ["fetch"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "browser": "./dist/index.browser.mjs"
+    }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "browser": "dist/index.browser.mjs"
 }
