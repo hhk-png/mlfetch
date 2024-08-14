@@ -43,12 +43,14 @@ const info = ref<Photo>({
 })
 
 onMounted(() => {
-  ml.enqueueWithInterval(
-    `https://jsonplaceholder.typicode.com/photos/${props.id}`,
-    2000,
-    (json: Photo) => {
+  ml.enqueueWithInterval({
+    url: `https://jsonplaceholder.typicode.com/photos/${props.id}`,
+    type: 'json',
+    setCallback: (json: Photo) => {
+      // console.log(json)
       info.value = json
-    })
+    }
+  }, 1000)
 })
 
 </script>
