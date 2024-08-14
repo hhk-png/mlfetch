@@ -1,6 +1,5 @@
 export interface MlOptions {
   poolingTime?: number
-  // stateWindowSize: number
   concurrency?: number
   adjustInterval?: number
   requestTimeWindowLength?: number
@@ -13,10 +12,10 @@ type BodyMethodNames = {
 }[keyof Body];
 
 export interface QueueItem {
-  url: string
+  url: string | URL | Request
   type: BodyMethodNames
   timeout?: number
-  setCallback: Function
-  errorCallback?: Function
+  setCallback: (res: any) => unknown
+  errorCallback?: (err: Error) => unknown
   fetchOptions?: RequestInit
 }

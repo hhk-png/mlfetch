@@ -13,6 +13,16 @@ class FetchError extends Error {
   }
 }
 
+function extractUrl(url: string | URL | Request): string {
+  if (url instanceof Request) {
+    return url.url
+  }
+  if (url instanceof URL) {
+    return url.href
+  }
+  return url
+}
+
 class Mlfetch {
   private urls: QueueItem[] = []
   private poolingTime: number = 500
@@ -77,14 +87,14 @@ class Mlfetch {
               `Request failed with status ${response.status}`,
               response.status,
               response.statusText,
-              url,
+              extractUrl(url),
               response.headers
             );
           }
           return response[type]()
         })
         .then(data => setCallback(data))
-        .catch(err => {
+        .catch((err: Error) => {
           clearTimeout(timeoutId);
           this.setRequestTime(Date.now() - startTime)
           errorCallback && errorCallback(err)
@@ -98,13 +108,6 @@ class Mlfetch {
     }
   }
 
-  public destroy() {
-    clearInterval(this.adjustTimer)
-    clearInterval(this.pollTimer)
-    this.urlTimers.forEach(timer => clearInterval(timer))
-    this.urls.length = 0
-  }
-
   private numOfRequestInAdjustTime = 0
   public enqueue(item: QueueItem) {
     this.numOfRequestInAdjustTime++
@@ -116,13 +119,14 @@ class Mlfetch {
     const timer = setInterval(() => {
       this.enqueue(item)
     }, interval)
-    this.urlTimers.set(item.url, timer)
+    this.urlTimers.set(extractUrl(item.url), timer)
   }
 
-  public deleteUrlTimer(url: string) {
-    if (this.urlTimers.has(url)) {
-      clearInterval(this.urlTimers.get(url))
-      this.urlTimers.delete(url)
+  public deleteUrlTimer(url: string | URL | Request) {
+    const urlStr = extractUrl(url)
+    if (this.urlTimers.has(urlStr)) {
+      clearInterval(this.urlTimers.get(urlStr))
+      this.urlTimers.delete(urlStr)
       return true
     }
     return undefined
@@ -153,6 +157,13 @@ class Mlfetch {
   public run() {
     this.startRequest()
     this.adjustMaxConcurrency()
+  }
+
+  public destroy() {
+    clearInterval(this.adjustTimer)
+    clearInterval(this.pollTimer)
+    this.urlTimers.forEach(timer => clearInterval(timer))
+    this.urls.length = 0
   }
 }
 
