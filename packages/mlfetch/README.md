@@ -13,9 +13,22 @@ import Mlfetch from 'mlfetch'
 
 const mlfetch = new Mlfetch()
 
-mlfetch.run()
+for (let i = 0; i < 80; i++) {
+  ml.enqueueWithInterval({
+    url: `https://jsonplaceholder.typicode.com/photos/i`,
+    type: 'json',
+    setCallback: (json: Photo) => {
+      console.log(json)
+      info.value = json
+    }
+  }, 1000)
+}
 
-export default mlfetch
+setTimeout(() => {
+  ml.destroy()
+}, 20000)
+
+mlfetch.run()
 ```
 
 ## interface
@@ -25,7 +38,7 @@ export default mlfetch
 **properties：**
 
 - **poolingTime** (`number`, `optional`, default: `500`): The interval for polling request process，measured in milliseconds (**ms**)
-- **concurrency** (`number`, `optional`, default: `10`): Initial concurrency
+- **concurrency** (`number`, `optional`, default: `6`): Initial concurrency
 - **adjustInterval** (`number`, `optional`, default: `5000`): The interval for adjusting concurrency, measured in milliseconds (**ms**)
 - **requestTimeWindowLength** (`number`, `optional`, default: `30`): The statistical window size for calculating the average request time. To calculate the average request time for the nearest `requestTimeWindowLength` times
 

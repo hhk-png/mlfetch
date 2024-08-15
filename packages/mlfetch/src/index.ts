@@ -28,7 +28,7 @@ class Mlfetch {
   private poolingTime: number = 500
   private pollTimer: any
   // stateWindowSize: number
-  private concurrency: number = 10
+  private concurrency: number = 6
   private isFlowWorking: boolean[] = new Array(30).fill(false)
   private adjustInterval: number = 5000
   private requestTimeWindowLength: number = 30
@@ -76,33 +76,35 @@ class Mlfetch {
         controller.abort();
       }, timeout || 5000);
 
-
-      const startTime = Date.now()
-      fetch(url, { ...fetchOptions, signal })
-        .then((response: Response) => {
-          clearTimeout(timeoutId);
-          this.setRequestTime(Date.now() - startTime)
-          if (!response.ok) {
-            throw new FetchError(
-              `Request failed with status ${response.status}`,
-              response.status,
-              response.statusText,
-              extractUrl(url),
-              response.headers
-            );
-          }
-          return response[type]()
-        })
-        .then(data => setCallback(data))
-        .catch((err: Error) => {
-          clearTimeout(timeoutId);
-          this.setRequestTime(Date.now() - startTime)
-          errorCallback && errorCallback(err)
-        })
-        .finally(() => {
-          this.request(index)
-        })
-
+      try {
+        const startTime = Date.now()
+        fetch(url, { ...fetchOptions, signal })
+          .then((response: Response) => {
+            clearTimeout(timeoutId);
+            this.setRequestTime(Date.now() - startTime)
+            if (!response.ok) {
+              throw new FetchError(
+                `Request failed with status ${response.status}`,
+                response.status,
+                response.statusText,
+                extractUrl(url),
+                response.headers
+              );
+            }
+            return response[type]()
+          })
+          .then(data => setCallback(data))
+          .catch((err: Error) => {
+            clearTimeout(timeoutId);
+            this.setRequestTime(Date.now() - startTime)
+            errorCallback && errorCallback(err)
+          })
+          .finally(() => {
+            this.request(index)
+          })
+      } catch (error) {
+        errorCallback && errorCallback(error as Error)
+      }
     } else {
       this.isFlowWorking[index] = false
     }

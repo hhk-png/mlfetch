@@ -13,9 +13,22 @@ import Mlfetch from 'mlfetch'
 
 const mlfetch = new Mlfetch()
 
-mlfetch.run()
+for (let i = 0; i < 80; i++) {
+  ml.enqueueWithInterval({
+    url: `https://jsonplaceholder.typicode.com/photos/i`,
+    type: 'json',
+    setCallback: (json: Photo) => {
+      console.log(json)
+      info.value = json
+    }
+  }, 1000)
+}
 
-export default mlfetch
+setTimeout(() => {
+  ml.destroy()
+}, 20000)
+
+mlfetch.run()
 ```
 
 ## interface
@@ -25,7 +38,7 @@ export default mlfetch
 **属性：**
 
 - **poolingTime** (`number`, `optional`, default: `500`): 轮询请求流程的时间间隔，单位为 ms(毫秒)
-- **concurrency** (`number`, `optional`, default: `10`): 初始的最大并发数，
+- **concurrency** (`number`, `optional`, default: `6`): 初始的最大并发数，
 - **adjustInterval** (`number`, `optional`, default: `5000`): 调整并发数的时间间隔，单位为 ms(毫秒)
 - **requestTimeWindowLength** (`number`, `optional`, default: `30`): 平均请求时间的统计窗口大小，计算近 requestTimeWindowLength 次的平均请求时间
 

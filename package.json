@@ -9,7 +9,8 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "build": "rollup -c",
+    "build": "cd packages/mlfetch && rollup -c",
+    "release": "cd packages/mlfetch && pnpm publish --publish-branch release --no-git-checks",
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
