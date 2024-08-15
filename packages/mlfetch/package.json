@@ -1,6 +1,6 @@
 {
   "name": "mlfetch",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A request manager using fetch for scenarios that require lots of requests to be sent",
   "author": "hhk-png <fangluoabc@163.com>",
   "license": "MIT",
